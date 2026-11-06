@@ -61,3 +61,7 @@ Content 2
 npm install
 npm run build
 ```
+
+## License
+
+MIT. Based on [Obsidian Tabs](https://github.com/xhuajin/obsidian-tabs) by Huajin.
