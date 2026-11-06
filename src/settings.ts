@@ -288,11 +288,9 @@ class SampleTabs {
     this.plugin = plugin;
     this.settingsTab = settingsTab;
     this.containerEl = containerEl;
-    // 初始化
     this.tabscontainerEl = this.containerEl.createDiv('tabs-container');
     this.tabsnavEl = this.tabscontainerEl.createDiv();
     this.tabscontentsEl = this.tabscontainerEl.createDiv('tabs-contents');
-    // 创建示例 tabs
     this.createTabsContainer();
     this.createSampleTabNav();
     this.createSampleTabContent();
@@ -377,7 +375,6 @@ class SampleTabs {
   }
 
   private generateTabsStyleSettings(containerEl: HTMLElement): void {
-    // 边框：无边框、悬停显示、始终显示
     new Setting(containerEl)
       .setName(t('settings.tabsBorder.name'))
       .setDesc(t('settings.tabsBorder.desc'))
@@ -401,7 +398,6 @@ class SampleTabs {
           })
       );
 
-    // 边框的颜色
     new Setting(containerEl)
       .setName(t('settings.tabsBorderColor.name'))
       .setDesc(t('settings.tabsBorderColor.desc'))
@@ -415,7 +411,6 @@ class SampleTabs {
       )
       .then(setting => this.settingsTab.addResetButton(setting, 'defaultTabsBorderColor'));
 
-    // Tabs 代码块右上角的编辑按钮
     new Setting(containerEl)
       .setName(t('settings.hideTabsEditBlockButton.name'))
       .setDesc(t('settings.hideTabsEditBlockButton.desc'))
@@ -493,7 +488,6 @@ class SampleTabs {
   }
 
   private generateTabsContentStyleSettings(containerEl: HTMLElement): void {
-    // Tabs contents 的 padding
     new Setting(containerEl)
       .setName(t('settings.tabsContentsPadding.name'))
       .setDesc(t('settings.tabsContentsPadding.desc'))
@@ -510,7 +504,6 @@ class SampleTabs {
       )
       .then(setting => this.settingsTab.addResetButton(setting, 'defaultTabsContentsPadding'));
 
-    // 是否限制 Tabs contents 的高度，例如 250px, 20em 等（取值为 0 时不限制）
     new Setting(containerEl)
       .setName(t('settings.tabsContentsMaxHeight.name'))
       .setDesc(t('settings.tabsContentsMaxHeight.desc'))
@@ -543,7 +536,6 @@ class SampleTabs {
 
   refresh(): void {
     this.clear();
-    // 初始化
     this.tabscontainerEl = this.containerEl.createDiv('tabs-container');
     this.tabsnavEl = this.tabscontainerEl.createDiv();
     this.tabscontentsEl = this.tabscontainerEl.createDiv('tabs-contents');

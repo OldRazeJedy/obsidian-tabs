@@ -1,11 +1,6 @@
 import { Menu } from 'obsidian';
 import { TabEditor } from './tab-editor';
 
-/**
- * From plugin: table enhancer
- * url: https://github.com/Stardusten/ob-table-enhancer/
- */
-
 export class TableMenu extends Menu {
   dom?: HTMLElement;
   editor: TabEditor;
@@ -13,7 +8,7 @@ export class TableMenu extends Menu {
   constructor(editor: TabEditor) {
     super();
     this.editor = editor;
-    this.addItem(item => item.setDisabled(true)); // 添加一个空 item，防止不显示
+    this.addItem(item => item.setDisabled(true));
   }
 
   onload() {
@@ -21,20 +16,15 @@ export class TableMenu extends Menu {
     const menuDom = this.dom!;
     const frag = activeDocument.createDocumentFragment();
     const containerEl = frag.createDiv({ cls: 'table-generator-container' });
-    // 行列计数器加上 menu-item，使样式和 menu 更搭
     const counter = frag.createDiv({ cls: ['table-generator-counter', 'menu-item'] });
-    // TODO 行列数如何确定 j 列对应的格子 el
     for (let i = 0; i < 7; i++) {
       for (let j = 0; j < 7; j++) {
         const gridEl = createDiv({ cls: 'table-generator-grid' });
         gridEl.setAttr('i', i);
         gridEl.setAttr('j', j);
-        // 点击格子时，创建对应大小的表格
         gridEl.addEventListener('click', () => {
-          // i + 1 行，j + 1 列
           this.editor.createEmptyTable(i + 1, j + 1);
         });
-        // 鼠标进入格子时，更新格子高亮
         this.editor.plugin.registerDomEvent(gridEl, 'mouseenter', () => {
           containerEl.querySelectorAll('.table-generator-grid').forEach(gridEl => {
             const i2Attr = gridEl.getAttr('i');

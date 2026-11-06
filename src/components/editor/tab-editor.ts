@@ -193,7 +193,6 @@ export class TabEditor {
           },
         });
       } else {
-        // 多行文本加粗
         let newText = getFormattedContent(
           this.view.state.doc.sliceString(this.view.state.selection.main.from, fromLine.to),
           '**'
@@ -230,7 +229,6 @@ export class TabEditor {
           },
         });
       } else {
-        // 多行文本加粗
         let newText = getFormattedContent(
           this.view.state.doc.sliceString(this.view.state.selection.main.from, fromLine.to),
           '*'
@@ -285,7 +283,6 @@ export class TabEditor {
       const fromLine = this.view.state.doc.lineAt(selection.from);
       const toLine = this.view.state.doc.lineAt(selection.to);
 
-      // 遍历选中的行，判断是转换为列表还是取消列表
       let toList = false;
       for (let i = fromLine.number; i <= toLine.number; i++) {
         const line = this.view.state.doc.line(i);
@@ -331,7 +328,6 @@ export class TabEditor {
       const fromLine = this.view.state.doc.lineAt(selection.from);
       const toLine = this.view.state.doc.lineAt(selection.to);
 
-      // 遍历选中的行，判断是否存在有序列表
       let toList = false;
       const isList = (line: string) => {
         const split = line.indexOf('. ');
@@ -349,7 +345,6 @@ export class TabEditor {
       const nextNum = {};
 
       let indent = fromLine.text.length - fromLine.text.trimStart().length;
-      // 如果这行为列表的后继部分，记录之前缩进大于等于当前缩进的列表
       if (fromLine.number > 1) {
         for (let i = fromLine.number - 1; i > 0; i--) {
           if (!isList(this.view.state.doc.line(i).text.trimStart())) {
@@ -384,7 +379,6 @@ export class TabEditor {
             ? nextNum[lineIndent].toString() + line.text.slice(line.text.indexOf('. ') + 2)
             : (newline = nextNum[lineIndent].toString() + '. ' + line.text.trimStart());
           nextNum[lineIndent]++;
-          // 把缩进多的行的数字重置为1
           for (let indent in nextNum) {
             if (parseInt(indent) > lineIndent) {
               nextNum[indent] = 1;
@@ -399,7 +393,6 @@ export class TabEditor {
           });
         }
       } else {
-        // 取消有序列表
         for (let i = fromLine.number; i <= toLine.number; i++) {
           const line = this.view.state.doc.line(i);
           const indent = line.text.length - line.text.trimStart().length;
@@ -467,7 +460,6 @@ export class TabEditor {
           insert: newText,
         },
       });
-      // 光标移动到代码块
     });
 
     // callout
@@ -791,7 +783,6 @@ export class TabEditor {
     {
       key: 'Tab',
       run: editor => {
-        // 遍历选中的所有行，添加缩进
         const selection = editor.state.selection.main;
         const fromLine = editor.state.doc.lineAt(selection.from);
         const toLine = editor.state.doc.lineAt(selection.to);
@@ -821,7 +812,6 @@ export class TabEditor {
     {
       key: 'Shift-Tab',
       run: editor => {
-        // 遍历选中的所有行，去除缩进
         const selection = editor.state.selection.main;
         const fromLine = editor.state.doc.lineAt(selection.from);
         const toLine = editor.state.doc.lineAt(selection.to);

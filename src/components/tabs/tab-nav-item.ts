@@ -41,7 +41,6 @@ export class TabNavItem {
       e.dataTransfer.setData('text/plain', tabText);
       e.dataTransfer.effectAllowed = 'copy';
 
-      // 记录当前 drag 的 tab
       this.tabs.plugin.tabDragger = {
         fromTabs: this.tabnav.tabs,
         draggedTab: this,
@@ -81,21 +80,17 @@ export class TabNavItem {
       this.tabitemEl.classList.add('tabs-nav-item-dragover');
       if (this.tabs.tabsConfig.titlePosition === 'top' || this.tabs.tabsConfig.titlePosition === 'bottom') {
         if (e.clientX - this.tabitemEl.getBoundingClientRect().left > this.tabitemEl.clientWidth * 0.5) {
-          // 右半侧
           this.tabitemEl.classList.remove('tabs-nav-item-dragover-before');
           this.tabitemEl.classList.add('tabs-nav-item-dragover-after');
         } else if (e.clientX - this.tabitemEl.getBoundingClientRect().left < this.tabitemEl.clientWidth * 0.5) {
-          // 左半侧
           this.tabitemEl.classList.remove('tabs-nav-item-dragover-after');
           this.tabitemEl.classList.add('tabs-nav-item-dragover-before');
         }
       } else {
         if (e.clientY - this.tabitemEl.getBoundingClientRect().top > this.tabitemEl.clientHeight * 0.5) {
-          // 下半侧
           this.tabitemEl.classList.remove('tabs-nav-item-dragover-before');
           this.tabitemEl.classList.add('tabs-nav-item-dragover-after');
         } else if (e.clientY - this.tabitemEl.getBoundingClientRect().top < this.tabitemEl.clientHeight * 0.5) {
-          // 上半侧
           this.tabitemEl.classList.remove('tabs-nav-item-dragover-after');
           this.tabitemEl.classList.add('tabs-nav-item-dragover-before');
         }
@@ -129,12 +124,10 @@ export class TabNavItem {
             ? this.index
             : this.index + 1;
       this.tabs.plugin.tabDragger.dropIndex = dropIndex;
-      // 同一文件内的拖拽
       if (
         tabDragger.fromTabs.context.sourcePath === tabDragger.toTabs.context.sourcePath &&
         tabDragger.fromTabs.activeView === tabDragger.toTabs.activeView
       ) {
-        // 在同一个 nav 上的拖拽
         if (tabDragger.fromTabs === tabDragger.toTabs) {
           if (this.index > tabDragger.draggedTab.index) {
             dropIndex -= 1;
@@ -144,12 +137,10 @@ export class TabNavItem {
             return;
           }
           let newDoc = '';
-          // 删除 dragIndex 的 tab，插入到 dropIndex 的位置，content 也是
           const tabnavitem = this.tabs.tabsNav.navItems.splice(dragIndex, 1)[0];
           this.tabs.tabsNav.navItems.splice(dropIndex, 0, tabnavitem);
           const tabcontent = this.tabs.tabsContents.tabcontents.splice(dragIndex, 1)[0];
           this.tabs.tabsContents.tabcontents.splice(dropIndex, 0, tabcontent);
-          // 更新 tabNav 和 tabContent 的 index，只用修改 dragIndex 和 dropIndex 之间的 tab 的 index。如果activeTab在拖拽范围内,需要修改currentIndex
           if (dragIndex < dropIndex) {
             for (let i = dragIndex; i <= dropIndex; i++) {
               this.tabs.tabsNav.navItems[i].index = i;
@@ -175,7 +166,6 @@ export class TabNavItem {
               }
             }
           }
-          // 获取新的 doc
           for (let i = 0; i < this.tabs.tabsNav.navItems.length; i++) {
             newDoc +=
               this.tabs.split +
@@ -191,7 +181,6 @@ export class TabNavItem {
             newDoc +
             this.tabs.backquote.repeat(this.tabs.backquoteCount);
 
-          // obsidian eiditor 不会自动刷新，这里手动刷新一下，等 editor 下一次 focus 的时候会自动刷新
           this.tabs.tabsNav.navWrapperEl.removeChild(tabnavitem.tabitemEl);
           this.tabs.tabsContents.tabcontentsEl.removeChild(tabcontent.contentEl);
 
@@ -218,9 +207,7 @@ export class TabNavItem {
             } as EditorPosition
           );
         }
-        // 不同 nav 之间的拖拽
         else {
-          // 更新 toTabs 的内容，将 draggedTab 插入到 toTabs.tabsNav 中，将 draggedTabContent 插入到 toTabs.tabsContents 中
           const tabDragger = this.tabs.plugin.tabDragger;
           tabDragger.draggedTab = new TabNavItem(
             tabDragger.toTabs.tabsNav,
@@ -236,7 +223,6 @@ export class TabNavItem {
           );
           tabDragger.toTabs.tabsNav.navItems.splice(tabDragger.dropIndex, 0, tabDragger.draggedTab);
           tabDragger.toTabs.tabsContents.tabcontents.splice(tabDragger.dropIndex, 0, tabDragger.draggedContent);
-          // 更新 toTabs 的 index
           if (dropIndex <= tabDragger.toTabs.currentIndex) {
             tabDragger.toTabs.currentIndex += 1;
             this.tabs.plugin.lastTabsCache.set(tabDragger.toTabs.tabsId, tabDragger.toTabs.currentIndex);
@@ -245,7 +231,6 @@ export class TabNavItem {
             tabDragger.toTabs.tabsNav.navItems[i].index = i;
             tabDragger.toTabs.tabsContents.tabcontents[i].index = i;
           }
-          // 更新 dom 元素：如果是插入到最后一个 tab 后面，直接 appendChild，否则 insertBefore
           if (dropIndex === tabDragger.toTabs.tabsNav.navItems.length - 1) {
             tabDragger.toTabs.tabsNav.navWrapperEl.appendChild(tabDragger.draggedTab.tabitemEl);
             tabDragger.toTabs.tabsContents.tabcontentsEl.appendChild(tabDragger.draggedContent.contentEl);
@@ -259,14 +244,12 @@ export class TabNavItem {
               tabDragger.toTabs.tabsContents.tabcontents[tabDragger.dropIndex + 1].contentEl
             );
           }
-          // 增加点击事件
           tabDragger.toTabs.plugin.registerDomEvent(tabDragger.draggedTab.tabitemEl, 'click', () => {
             const index = tabDragger.toTabs.tabsNav.navItems.indexOf(tabDragger.draggedTab);
             tabDragger.toTabs.tabsNav.refreshActiveTabNav(index);
             tabDragger.toTabs.tabsContents.refreshActiveTabContent(index);
             tabDragger.toTabs.currentIndex = index;
           });
-          // 如果有 double click 事件，需要重新注册
           if (this.tabs.plugin.settings.doubleClickToEdit) {
             tabDragger.toTabs.plugin.registerDomEvent(
               tabDragger.draggedContent.contentEl,
@@ -280,10 +263,8 @@ export class TabNavItem {
               }
             );
           }
-          // 增加 drag 事件
           tabDragger.draggedTab.registerdndEvents();
 
-          // 获取新的 toTabs 的内容
           let toTabsNewDoc = '';
           for (let i = 0; i < tabDragger.toTabs.tabsNav.navItems.length; i++) {
             toTabsNewDoc +=
@@ -301,7 +282,6 @@ export class TabNavItem {
             toTabsNewDoc +
             this.tabs.backquote.repeat(tabDragger.toTabs.backquoteCount);
 
-          // 删除 fromTabs 中的 tab
           if (tabDragger.fromTabs.currentIndex === tabDragger.draggedIndex) {
             if (tabDragger.fromTabs.currentIndex > 0) {
               tabDragger.fromTabs.currentIndex -= 1;
@@ -319,7 +299,6 @@ export class TabNavItem {
           tabDragger.fromTabs.tabsNav.navItems.splice(dragIndex, 1);
           tabDragger.fromTabs.tabsContents.tabcontents.splice(dragIndex, 1);
 
-          // 更新 fromTabs 的 index
           for (let i = 0; i < tabDragger.fromTabs.tabsNav.navItems.length; i++) {
             tabDragger.fromTabs.tabsNav.navItems[i].index = i;
             tabDragger.fromTabs.tabsContents.tabcontents[i].index = i;
@@ -340,14 +319,12 @@ export class TabNavItem {
             '\n' +
             fromTabsNewDoc +
             tabDragger.fromTabs.backquote.repeat(tabDragger.fromTabs.backquoteCount);
-          // 如果是同一个文件，先修改后面的 tabs 的内容，再修改前面的 tabs 的内容（避免行号变化导致修改错位）
           if (
             this.tabs.plugin.tabDragger.fromTabs.context.sourcePath ===
             this.tabs.plugin.tabDragger.toTabs.context.sourcePath
           ) {
             const activeView = this.tabs.app.workspace.getActiveViewOfType(MarkdownView);
             if (tabDragger.toTabs.sectionInfo.lineStart > tabDragger.fromTabs.sectionInfo.lineEnd) {
-              // 从上到下
               activeView.editor.replaceRange(
                 toTabsNewDoc,
                 { line: tabDragger.toTabs.sectionInfo.lineStart, ch: 0 } as EditorPosition,
@@ -369,7 +346,6 @@ export class TabNavItem {
               tabDragger.fromTabs.sectionInfo.lineEnd =
                 tabDragger.fromTabs.sectionInfo.lineEnd - tabDragger.draggedContentLineCount;
             } else if (tabDragger.toTabs.sectionInfo.lineEnd < tabDragger.fromTabs.sectionInfo.lineStart) {
-              // toTabs 在 fromTabs 上面，先修改 fromTabs 的内容，再修改 toTabs 的内容
               activeView.editor.replaceRange(
                 fromTabsNewDoc,
                 { line: tabDragger.fromTabs.sectionInfo.lineStart, ch: 0 } as EditorPosition,

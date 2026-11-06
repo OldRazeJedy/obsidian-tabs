@@ -141,7 +141,6 @@ export class Tabs {
     // switch tab event
     this.tabsNav.navItems.forEach(tab => {
       this.plugin.registerDomEvent(tab.tabitemEl, 'click', () => {
-        // 可能会插入新的tab，所以不能用固定的index，需要重新获取index
         const index = this.tabsNav.navItems.indexOf(tab);
         this.tabsNav.refreshActiveTabNav(index);
         this.tabsContents.refreshActiveTabContent(index);

@@ -26,7 +26,6 @@
   display: none;
 }
 
-/* 兼容 minimal 主题 */
 body :not(.canvas-node) .markdown-source-view.mod-cm6 .tabs-container .cm-gutters {
   position: sticky !important;
 }
