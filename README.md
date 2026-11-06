@@ -58,8 +58,8 @@ Content 2
 ## Development
 
 ```bash
-npm install
-npm run build
+pnpm install
+pnpm build
 ```
 
 ## License

@@ -3,16 +3,17 @@
   "version": "1.2.2",
   "description": "Create tabs in your notes.",
   "author": "OldRazeJedy",
-  "main": "lib/main.js",
+  "main": "dist/main.js",
   "license": "MIT",
+  "packageManager": "pnpm@11.5.2",
   "scripts": {
-    "build": "npx -y -p obsidian-plugin-cli@0.8.3 obsidian-plugin build --with-stylesheet src/styles.css src/main.ts",
-    "postbuild": "node -e \"const fs=require('fs'),path=require('path');for(const f of ['main.js','styles.css','manifest.json']){fs.copyFileSync(path.join('dist',f),f);}const vaultPluginDir='F:/MyGame/Personal/.obsidian/plugins/tabs';if(fs.existsSync('F:/MyGame/Personal/.obsidian/plugins')){fs.mkdirSync(vaultPluginDir,{recursive:true});for(const f of ['main.js','styles.css','manifest.json']){fs.copyFileSync(path.join('dist',f),path.join(vaultPluginDir,f));}}\"",
-    "dev": "npx -y -p obsidian-plugin-cli@0.8.3 obsidian-plugin dev --vault-path F:/MyGame/Personal --with-stylesheet src/styles.css src/main.ts"
+    "build": "node esbuild.config.mjs production",
+    "dev": "node esbuild.config.mjs"
   },
   "devDependencies": {
     "@codemirror/lang-markdown": "^6.2.4",
     "codemirror": "^6.0.1",
+    "esbuild": "^0.25.0",
     "obsidian": "1.8.7",
     "typescript": "5.9"
   },
